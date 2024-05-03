@@ -22,6 +22,10 @@ from tkinter import ttk
 from tkintermapview import TkinterMapView, convert_coordinates_to_address
 import pygeohash as pgh
 from utm import utm_zones, from_latlon, UTMZone
+import sys
+
+def on_quit():
+    sys.exit(0)
 
 class MapEditor(Frame):
     def __init__(self, root, width, height):
