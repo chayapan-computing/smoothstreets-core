@@ -9,6 +9,7 @@ pandas = "*"
 networkx = "*"
 geohash = "*"
 pygeohash = "*"
+pyinstaller = "*"
 
 [dev-packages]
 ipykernel = "*"
