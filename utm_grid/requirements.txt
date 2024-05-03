@@ -1,1 +1,5 @@
 tkintermapview
+pandas
+networkx
+# Geohash
+pygeohash  # https://pypi.org/project/pygeohash/
