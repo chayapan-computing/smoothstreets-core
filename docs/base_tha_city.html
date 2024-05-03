@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  
+  
+  <!-- Add Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+
+  <!-- Add Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+     crossorigin=""></script>
+  <!-- h3  -->
+  <script src="https://unpkg.com/h3-js"></script>
+
+  <style>
+    #map {
+  width: 80%;
+  height: 500px;
+  border: red 2px solid;
+  position: fixed;
+  top: 0; right: 0;
+}
+  </style>
+</head>
+<body>
+  <pre>
+https://en.wikipedia.org/wiki/List_of_municipalities_in_Thailand
+  
+City municipalities
+13.7525, 100.494167 Bangkok (Krung Thep Maha Nakhon)	กรุงเทพมหานคร	Bangkok	1,568.74	5,588,222	1972-12-14
+13.850833, 100.522222 Nonthaburi	นนทบุรี	Nonthaburi	38.90	251,026	1995-09-23 
+13.9125, 100.497778 Pak Kret	ปากเกร็ด	Nonthaburi	36.04	189,458	2000-02-16
+7.016667, 100.466667 Hat Yai	หาดใหญ่	Songkhla	21.00	149,459	1995-09-23
+13.124444, 100.999167	Chaophraya Surasak	เจ้าพระยาสุรศักดิ์	Chonburi	276.98	146,474	2013-05-01
+9.139722, 99.330556	Surat Thani	สุราษฎร์ธานี	Surat Thani	68.97	131,599	2007-05-04
+14.975, 102.1	Nakhon Ratchasima	นครราชสีมา	Nakhon Ratchasima	37.50	122,730	1995-09-23
+18.795278, 98.998611	Chiang Mai	เชียงใหม่	Chiang Mai	40.22	122,627	1936-03-28
+17.416667, 102.75	Udon Thani	อุดรธานี	Udon Thani	47.70	120,222	1995-09-23
+12.9357, 100.889	Pattaya	พัทยา	Chonburi	53.44	117,606	1978-11-29
+16.433333, 102.833333	Khon Kaen	ขอนแก่น	Khon Kaen	46.00	110,615	1995-09-23
+8.436389, 99.963056	Nakhon Si Thammarat	นครศรีธรรมราช	Nakhon Si Thammarat	22.56	100,416	1994-08-15
+13.083333, 100.883333	Laem Chabang	แหลมฉบัง	Chonburi	88.59	89,457	2010-05-24
+13.983333, 100.616667	Rangsit	รังสิต	Pathum Thani	20.80	84,268	2011-04-29
+ 
+Town municipalities
+15.85, 104.633333 Amnat Charoen	อำนาจเจริญ	Amnat Charoen	26,634
+13.336389, 100.927778 Ang Sila	อ่างศิลา	Chon Buri	30,538
+
+13.643889, 100.578056 Pu Chao Saming Phrai	ปู่เจ้าสมิงพราย	Samut Prakan	77,976
+13.63, 100.530278 Lat Luang	ลัดหลวง	Samut Prakan	73,196
+14.528611, 100.911389 Saraburi	สระบุรี	Saraburi	67,858
+13.347754,100.969997 Ban Suan	บ้านสวน	Chon Buri	60,797
+18.3, 99.5 Khelang Nakhon	เขลางค์นคร	Lampang	60,646
+
+Township municipalities
+20.428056, 99.883611 Mae Sai	แม่สาย	Chiang Rai	22,778
+19.732222, 99.140278 Chai Prakan	ไชยปราการ	Chiang Mai	16,044
+15.220833, 102.493889 Phimai	พิมาย	Nakhon Ratchasima	9,878
+19.918889, 99.213611 Wiang Fang	เวียงฝาง	Chiang Mai	7,652
+18.367222, 103.649722 Bueng Kan	บึงกาฬ	Bueng Kan	4,760
+
+  </pre>
+  <div id="map"></div>
+  <div>
+    <!-- Google Earth Timelapse 
+    <iframe width="1080" height="600" src="https://earthengine.google.com/iframes/timelapse_player_embed.html#v=13.08378,100.88227,11.978,latLng&t=0.85&ps=25&bt=19840101&et=20201231&startDwell=0&endDwell=0" frameborder="0" allowfullscreen></iframe>
+     -->
+  </div>
+</body>
+
+<script>
+    // Create a Leaflet map
+var map = L.map('map').setView([13.9125, 100.606667], 7);
+
+// Add a tile layer to the map
+// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+//   maxZoom: 18
+// }).addTo(map);
+// Terrain
+// L.tileLayer('http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}', { maxZoom: 18}).addTo(map);
+// Satellite only
+L.tileLayer('http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}', { maxZoom: 18}).addTo(map);
+
+// 1.
+// https://h3geo.org/docs/quickstart
+// https://www.npmjs.com/package/h3-js
+// https://h3geo.org/docs/api/traversal
+
+
+function plotCity(code, color, lat, lng, res=10, k=5) {
+// the city as a cell
+const h = h3.latLngToCell(lat, lng, res)
+
+// plot marker
+L.marker([lat, lng], {title:code}).addTo(map);
+
+const disks = h3.gridDisk(h, k);
+disks.map(d => { 
+  // console.log(d) 
+  // h3.cellToBoundary(d)    
+  var p0 = L.polygon(h3.cellToBoundary(d)).addTo(map);
+})
+// plot polygon
+L.polygon(h3.cellToBoundary(h), {color: color}).addTo(map);  
+}
+
+plotCity("กรุงเทพมหานคร", "yellow", 13.7525, 100.494167, res=7)
+plotCity("นนทบุรี", "yellow", 13.850833, 100.522222, res=7, k=2)
+plotCity("ปากเกร็ด", "yellow", 13.9125, 100.497778)
+plotCity("หาดใหญ่", "yellow", 7.016667, 100.466667)
+plotCity("เจ้าพระยาสุรศักดิ์", "yellow", 13.124444, 100.999167)
+plotCity("สุราษฎร์ธานี", "yellow", 9.139722, 99.330556)
+plotCity("นครราชสีมา", "yellow", 14.975, 102.1)
+plotCity("เชียงใหม่", "yellow", 18.795278, 98.998611)
+plotCity("อุดรธานี", "yellow", 17.416667, 102.75)
+plotCity("พัทยา", "yellow", 12.9357, 100.889)
+plotCity("ขอนแก่น", "yellow", 16.433333, 102.833333)
+plotCity("นครศรีธรรมราช", "yellow", 8.436389, 99.963056)
+plotCity("แหลมฉบัง", "yellow", 13.083333, 100.883333)
+plotCity("รังสิต", "yellow", 13.983333, 100.616667)
+
+//Town
+plotCity("อำนาจเจริญ", "yellow", 15.85, 104.633333)
+plotCity("อ่างศิลา", "yellow", 13.336389, 100.927778, res=9)
+plotCity("ปู่เจ้าสมิงพราย", "yellow", 13.643889, 100.578056)
+plotCity("ลัดหลวง", "yellow", 13.63, 100.530278)
+plotCity("สระบุรี", "yellow", 14.528611, 100.911389)
+plotCity("บ้านสวน", "yellow", 13.347754,100.969997, res=9)
+plotCity("เขลางค์นคร", "yellow", 18.3, 99.5)
+
+//Township
+plotCity("แม่สาย", "yellow", 20.428056, 99.883611)
+plotCity("ไชยปราการ", "yellow", 19.732222, 99.140278, res=7)
+plotCity("พิมาย", "yellow", 15.220833, 102.493889)
+plotCity("เวียงฝาง", "yellow", 19.918889, 99.213611)
+plotCity("บึงกาฬ", "yellow", 18.367222, 103.649722)
+
+// plotCity("", "yellow", 19.732222, 99.140278)  
+</script>
+
+</html>

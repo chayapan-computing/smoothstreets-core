@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  
+  
+  <!-- Add Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+
+  <!-- Add Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+     crossorigin=""></script>
+  <!-- h3  -->
+  <script src="https://unpkg.com/h3-js"></script>
+
+  <style>
+    #map {
+    width: 100%;
+    height: 500px;
+    border: red 2px solid;
+    }
+  </style>
+</head>
+<body>
+  <pre>
+  DMK 13.9125, 100.606667  map zoom 15, cell res 7, k=3  https://en.wikipedia.org/wiki/Don_Mueang_International_Airport
+  BKK 13.6925, 100.75 https://en.wikipedia.org/wiki/Suvarnabhumi_Airport
+  UTP 12.679722, 101.005 U-Tapao International Airport
+  KKC 16.466628, 102.783661 https://en.wikipedia.org/wiki/Khon_Kaen_Airport
+  NAK 14.949444, 102.3125 https://en.wikipedia.org/wiki/Nakhon_Ratchasima_Airport
+  URT 9.1325, 99.135556 https://en.wikipedia.org/wiki/Surat_Thani_International_Airport
+ NAW 6.52, 101.743333 https://en.wikipedia.org/wiki/Narathiwat_Airport
+  </pre>
+  <div id="map"></div>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  
+  
+  <!-- Add Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+
+  <!-- Add Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+     crossorigin=""></script>
+  <!-- h3  -->
+  <script src="https://unpkg.com/h3-js"></script>
+</head>
+<body>
+  <pre>
+  DMK 13.9125, 100.606667  map zoom 15, cell res 7, k=3  https://en.wikipedia.org/wiki/Don_Mueang_International_Airport
+  BKK 13.6925, 100.75 https://en.wikipedia.org/wiki/Suvarnabhumi_Airport
+  UTP 12.679722, 101.005 U-Tapao International Airport
+  KKC 16.466628, 102.783661 https://en.wikipedia.org/wiki/Khon_Kaen_Airport
+  NAK 14.949444, 102.3125 https://en.wikipedia.org/wiki/Nakhon_Ratchasima_Airport
+  URT 9.1325, 99.135556 https://en.wikipedia.org/wiki/Surat_Thani_International_Airport
+ NAW 6.52, 101.743333 https://en.wikipedia.org/wiki/Narathiwat_Airport
+  </pre>
+  <div id="map"></div>
+</body>
+
+<script>
+    // Create a Leaflet map
+var map = L.map('map').setView([13.9125, 100.606667], 15);
+
+// Add a tile layer to the map
+// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+//   maxZoom: 18
+// }).addTo(map);
+// Terrain
+// L.tileLayer('http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}', { maxZoom: 18}).addTo(map);
+// Satellite only
+L.tileLayer('http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}', { maxZoom: 18}).addTo(map);
+
+// 1.
+// https://h3geo.org/docs/quickstart
+// https://www.npmjs.com/package/h3-js
+
+// DMK airport as a cell
+const DMK = h3.latLngToCell(13.9125, 100.606667, 6)
+console.log(DMK);
+
+L.polygon(h3.cellToBoundary(DMK)).addTo(map);
+
+const disks = h3.gridDisk(DMK, 3);
+disks.map(d => { 
+  // console.log(d) 
+  // h3.cellToBoundary(d)    
+  var p0 = L.polygon(h3.cellToBoundary(d)).addTo(map);
+})
+// plot polygon
+L.polygon(h3.cellToBoundary(DMK)).addTo(map);
+
+// https://h3geo.org/docs/api/traversal
+
+
+function addAirport(code, color, lat, lng, res=6, k=3) {
+// DMK airport as a cell
+const h = h3.latLngToCell(lat, lng, res)
+
+const disks = h3.gridDisk(h, k);
+disks.map(d => { 
+  // console.log(d) 
+  // h3.cellToBoundary(d)    
+  var p0 = L.polygon(h3.cellToBoundary(d)).addTo(map);
+})
+// plot polygon
+L.polygon(h3.cellToBoundary(h), {color: color}).addTo(map);  
+}
+
+
+addAirport("BKK", "yellow", 13.6925, 100.75)
+addAirport("UTP", "yellow", 12.679722, 101.005)
+addAirport("KKC", "yellow", 16.466628, 102.783661)
+addAirport("NAK", "yellow", 14.949444, 102.3125)
+addAirport("URT", "yellow", 9.1325, 99.135556)
+addAirport("NAW", "yellow", 6.52, 101.743333)
+ 
+  
+// addAirport(", "yellow", )
+// addAirport(", "yellow", )
+</script>
+</html>
