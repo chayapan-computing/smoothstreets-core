@@ -1,0 +1,29 @@
+{
+  "name": "smoothstreets-core",
+  "version": "1.0.0",
+  "description": "SmoothStreets is data platform SaaS for road maintenance agencies and smart cities.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest",
+    "make": "python3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chayapan-computing/smoothstreets-core.git"
+  },
+  "keywords": [
+    "Thailand",
+    "OSM",
+    "Road",
+    "Data"
+  ],
+  "author": "SmoothStreets project contributor, Chayapan Computing",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/chayapan-computing/smoothstreets-core/issues"
+  },
+  "homepage": "https://github.com/chayapan-computing/smoothstreets-core#readme"
+}
