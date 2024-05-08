@@ -202,10 +202,10 @@ class UTMCoordinateConverter(Frame):
             self.tile_server = 0
     
     def scroll_update(self, e):
-        print("scroll... %s" % str(e))
         # Update map widget accoring to scroll bar value.
         lat = float(self.lat.get())
         lng = float(self.lng.get())
+        print("scroll to ... %s %s: %s" % (lat, lng, str(e)))
         self.map_widget.set_position(lat, lng)
 
     def convert(self, e):
@@ -256,6 +256,7 @@ class UTMCoordinateConverter(Frame):
         self._root.event_list.update("UTM Add marker %s %s" % (zone, str(coords)))
 
 class EventList(Frame):
+    """This frame is referened globally as WIDGET._root.event_list from any widget."""
     def __init__(self, root):
         Frame.__init__(self)
         self.events = Listbox(self, width=80)

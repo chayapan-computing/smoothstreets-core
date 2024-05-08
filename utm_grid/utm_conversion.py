@@ -1,4 +1,4 @@
-# This UTM conversion code is by Tobias Bieniek per MIT license
+# This UTM conversion code from Tobias Bieniek has MIT license
 # from https://github.com/Turbo87/utm/tree/master
 """
 MIT License
