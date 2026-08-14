@@ -62,7 +62,7 @@ QueryResult RTreeIndex::range_query(const Box& box) const {
     std::lock_guard<std::mutex> lock(mutex_);
     auto start = std::chrono::steady_clock::now();
     QueryResult result;
-    rtree_.query(bgi::intersects(box), std::back_inserter(result.items));
+    rtree_.query(bgi::intersects(box), std::back_inserter(result.values));
     auto end = std::chrono::steady_clock::now();
     result.elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     return result;
@@ -72,7 +72,7 @@ QueryResult RTreeIndex::nearest_neighbor(const Point& point, std::size_t k) cons
     std::lock_guard<std::mutex> lock(mutex_);
     auto start = std::chrono::steady_clock::now();
     QueryResult result;
-    rtree_.query(bgi::nearest(point, k), std::back_inserter(result.items));
+    rtree_.query(bgi::nearest(point, k), std::back_inserter(result.values));
     auto end = std::chrono::steady_clock::now();
     result.elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     return result;

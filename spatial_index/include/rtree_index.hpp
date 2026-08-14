@@ -30,7 +30,7 @@ struct Item {
 };
 
 struct QueryResult {
-    std::vector<Item> items;
+    std::vector<Value> values;
     long long elapsed_us{0};
 };
 

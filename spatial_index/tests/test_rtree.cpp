@@ -41,8 +41,8 @@ void test_range_query() {
     index.insert({"a", 0.0, 0.0, 1.0, 1.0});
     index.insert({"b", 5.0, 5.0, 6.0, 6.0});
     auto result = index.range_query(Box(Point(0.5, 0.5), Point(2.0, 2.0)));
-    assert(result.items.size() == 1);
-    assert(result.items[0].id == "a");
+    assert(result.values.size() == 1);
+    assert(result.values[0].second == "a");
     std::cout << "test_range_query passed\n";
 }
 
@@ -51,8 +51,8 @@ void test_nearest_neighbor() {
     index.insert({"a", 0.0, 0.0, 1.0, 1.0});
     index.insert({"b", 10.0, 10.0, 11.0, 11.0});
     auto result = index.nearest_neighbor(Point(0.0, 0.0), 1);
-    assert(result.items.size() == 1);
-    assert(result.items[0].id == "a");
+    assert(result.values.size() == 1);
+    assert(result.values[0].second == "a");
     std::cout << "test_nearest_neighbor passed\n";
 }
 

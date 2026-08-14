@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 // Minimal POSIX socket-based HTTP server
 #ifdef _WIN32
@@ -148,7 +149,20 @@ void HttpServer::start() {
 }
 
 void HttpServer::stop() {
-    running_ = false;
+    bool expected = true;
+    if (!running_.compare_exchange_strong(expected, false)) {
+        return;
+    }
+    // Wake up accept() by connecting to the server socket.
+    SocketType wake_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (wake_fd != INVALID_SOCKET_VALUE) {
+        sockaddr_in addr{};
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(port_);
+        inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+        connect(wake_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+        close_socket(wake_fd);
+    }
     if (thread_.joinable()) {
         thread_.join();
     }
@@ -162,12 +176,14 @@ void HttpServer::register_routes() {
     handlers_["POST /insert"] = [this](const std::string& body) {
         // Expects JSON: {"id":"a","min_x":0,"min_y":0,"max_x":1,"max_y":1}
         Item item;
+        char id_buf[64] = {};
         if (sscanf(body.c_str(),
                    "{\"id\":\"%63[^\"]\",\"min_x\":%lf,\"min_y\":%lf,\"max_x\":%lf,\"max_y\":%lf",
-                   item.id.data(), &item.min_x, &item.min_y, &item.max_x,
+                   id_buf, &item.min_x, &item.min_y, &item.max_x,
                    &item.max_y) < 5) {
             return make_response(400, "{\"error\":\"invalid payload\"}");
         }
+        item.id = id_buf;
         bool ok = index_.insert(item);
         return make_response(200,
                              ok ? "{\"status\":\"ok\"}" : "{\"status\":\"exists\"}");
@@ -207,12 +223,14 @@ void HttpServer::register_routes() {
         auto result = index_.range_query(Box(Point(min_x, min_y), Point(max_x, max_y)));
         std::ostringstream oss;
         oss << "{\"elapsed_us\":" << result.elapsed_us << ",\"items\":[";
-        for (size_t i = 0; i < result.items.size(); ++i) {
-            const auto& it = result.items[i];
-            oss << "{\"id\":\"" << it.id << "\","
-                << "\"min_x\":" << it.min_x << ",\"min_y\":" << it.min_y << ","
-                << "\"max_x\":" << it.max_x << ",\"max_y\":" << it.max_y << "}";
-            if (i + 1 < result.items.size()) oss << ",";
+        for (size_t i = 0; i < result.values.size(); ++i) {
+            const auto& value = result.values[i];
+            const auto& box = value.first;
+            const auto& id = value.second;
+            oss << "{\"id\":\"" << id << "\","
+                << "\"min_x\":" << bg::get<bg::min_corner, 0>(box) << ",\"min_y\":" << bg::get<bg::min_corner, 1>(box) << ","
+                << "\"max_x\":" << bg::get<bg::max_corner, 0>(box) << ",\"max_y\":" << bg::get<bg::max_corner, 1>(box) << "}";
+            if (i + 1 < result.values.size()) oss << ",";
         }
         oss << "]}";
         return make_response(200, oss.str());
@@ -227,12 +245,14 @@ void HttpServer::register_routes() {
         auto result = index_.nearest_neighbor(Point(x, y), k);
         std::ostringstream oss;
         oss << "{\"elapsed_us\":" << result.elapsed_us << ",\"items\":[";
-        for (size_t i = 0; i < result.items.size(); ++i) {
-            const auto& it = result.items[i];
-            oss << "{\"id\":\"" << it.id << "\","
-                << "\"min_x\":" << it.min_x << ",\"min_y\":" << it.min_y << ","
-                << "\"max_x\":" << it.max_x << ",\"max_y\":" << it.max_y << "}";
-            if (i + 1 < result.items.size()) oss << ",";
+        for (size_t i = 0; i < result.values.size(); ++i) {
+            const auto& value = result.values[i];
+            const auto& box = value.first;
+            const auto& id = value.second;
+            oss << "{\"id\":\"" << id << "\","
+                << "\"min_x\":" << bg::get<bg::min_corner, 0>(box) << ",\"min_y\":" << bg::get<bg::min_corner, 1>(box) << ","
+                << "\"max_x\":" << bg::get<bg::max_corner, 0>(box) << ",\"max_y\":" << bg::get<bg::max_corner, 1>(box) << "}";
+            if (i + 1 < result.values.size()) oss << ",";
         }
         oss << "]}";
         return make_response(200, oss.str());

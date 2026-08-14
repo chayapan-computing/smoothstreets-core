@@ -53,11 +53,11 @@ int main(int argc, char* argv[]) {
 
     Box query_box(Point(4000.0, 4000.0), Point(6000.0, 6000.0));
     auto rq = index.range_query(query_box);
-    std::cout << "Range query: " << rq.items.size() << " hits in " << rq.elapsed_us << " us\n";
+    std::cout << "Range query: " << rq.values.size() << " hits in " << rq.elapsed_us << " us\n";
 
     Point query_point(5000.0, 5000.0);
     auto nn = index.nearest_neighbor(query_point, 10);
-    std::cout << "Nearest neighbor (k=10): " << nn.items.size() << " results in "
+    std::cout << "Nearest neighbor (k=10): " << nn.values.size() << " results in "
               << nn.elapsed_us << " us\n";
 
     RTreeIndex other;

@@ -20,7 +20,8 @@ int main(int argc, char* argv[]) {
 
     std::cout << "smoothstreets spatial_index server listening on port " << port << "\n";
     std::cout << "Press Enter to stop...\n";
-    std::cin.get();
+    std::string line;
+    std::getline(std::cin, line);
 
     server.stop();
     return 0;
